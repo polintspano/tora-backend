@@ -1,13 +1,17 @@
 import {
+  Collection,
   Entity,
   EntityRepositoryType,
   ManyToOne,
+  OneToMany,
   Property,
 } from '@mikro-orm/core';
 import { Project } from '../projects/project.entity';
-import { User } from '../users/user.entity';
 import { Team } from '../teams/team.entity';
 import { TaskRepository } from './task.repository';
+import { TaskUserRelation } from './task-user-relation/task-user-relation.entity';
+import { TaskNetwork } from './task-network/task-network.entity';
+import { TaskAttachmentRelation } from './tesk-attachment-relation/task-attachment-relation.entity';
 
 @Entity({ repository: () => TaskRepository })
 export class Task {
@@ -31,14 +35,20 @@ export class Task {
   @Property()
   description: string;
 
-  @ManyToOne(() => User)
-  assignee: User;
+  @OneToMany(
+    () => TaskUserRelation,
+    (taskUserRelation) => taskUserRelation.task,
+  )
+  collaborators: Collection<TaskUserRelation> = new Collection(this);
 
   @Property()
   priority: string;
 
-  @Property()
-  parent: Task;
+  @OneToMany(() => TaskNetwork, (taskNetwork) => taskNetwork.parent)
+  outgoingRelations: TaskNetwork;
+
+  @OneToMany(() => TaskNetwork, (taskNetwork) => taskNetwork.linkedWorkItem)
+  incomingRelations: TaskNetwork;
 
   @Property()
   dueDate: Date;
@@ -52,14 +62,11 @@ export class Task {
   @Property()
   startDate: Date;
 
-  @ManyToOne(() => User)
-  reporter: User;
-
-  @Property()
-  attachments: string;
-
-  @Property()
-  linkedWorkItems: Task;
+  @OneToMany(
+    () => TaskAttachmentRelation,
+    (taskAttachmentRelation) => taskAttachmentRelation.task,
+  )
+  attachments: Collection<TaskAttachmentRelation> = new Collection(this);
 
   @Property()
   restrictedTo: string;

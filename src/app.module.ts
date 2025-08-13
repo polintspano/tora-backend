@@ -9,6 +9,7 @@ import { TeamsModule } from './teams/teams.module';
 import { ProjectsModule } from './projects/projects.module';
 import { BoardsModule } from './boards/boards.module';
 import { TasksModule } from './tasks/tasks.module';
+import { AttachmentsModule } from './attachments/attachments.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TasksModule } from './tasks/tasks.module';
     ProjectsModule,
     BoardsModule,
     TasksModule,
+    AttachmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
